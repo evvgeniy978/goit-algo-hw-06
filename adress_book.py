@@ -11,7 +11,10 @@ class Name(Field):
     pass
 
 class Phone(Field):
-    pass
+    def __init__(self, value):
+        if not (isinstance(value, str) and value.isdigit() and len(value) == 10):
+            raise ValueError("Phone number must be a string of 10 digits")
+        super().__init__(value)
 
 class Record:
     def __init__(self, name):
@@ -19,19 +22,19 @@ class Record:
         self.phones = []
 
     def add_phone(self, phone):
-        self.phones.append(Phone(phone))
+        new_phone = Phone(phone)  # Якщо phone невалідний, це викличе ValueError
+        self.phones.append(new_phone)
 
     def remove_phone(self, phone):
         self.phones = [p for p in self.phones if p.value != phone]
 
     def edit_phone(self, old_phone, new_phone):
-        found = False
+        Phone(new_phone)  # Якщо new_phone невалідний, це викличе ValueError
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
-                found = True
                 break
-        if not found:
+        else:
             raise ValueError(f"Phone {old_phone} not found")
 
     def find_phone(self, phone):
